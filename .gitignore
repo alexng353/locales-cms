@@ -1,5 +1,5 @@
 node_modules
-server/locales/*
+server/locales
 
 frontend/node_modules
 frontend/.pnp
