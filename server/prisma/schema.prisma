@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String
+  edits     Edit[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  invites   Invite[]
+  invitedBy Invite?  @relation("InvitedBy", fields: [inviteId], references: [id])
+  inviteId  Int?
+}
+
+model Edit {
+  id          Int        @id @default(autoincrement())
+  namespace   String
+  author      User       @relation(fields: [authorId], references: [id])
+  authorId    Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  Namespace   Namespace? @relation(fields: [namespaceId], references: [id])
+  namespaceId Int?
+}
+
+model Namespace {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  edits     Edit[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  path      String
+  content   String
+}
+
+model Invite {
+  id        Int      @id @default(autoincrement())
+  invite    String   @unique
+  Used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  CreatedBy User     @relation(fields: [CreatorId], references: [id])
+  CreatorId Int
+  Users     User[]   @relation("InvitedBy")
+}

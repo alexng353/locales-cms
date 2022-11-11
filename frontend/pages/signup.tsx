@@ -1,34 +1,21 @@
 import { useState } from "react";
 
-export default function Home() {
+export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleSave = async () => {
-    // base64(email:password)
-
-    const base64 = Buffer.from(`${password}:${email}`).toString("base64");
-
-    localStorage.setItem("auth", base64);
-
-    console.log(base64);
-  };
+  const [inviteCode, setInviteCode] = useState("");
 
   const handleSend = async () => {
-    const base64 = localStorage.getItem("auth");
-
-    if (!base64) return;
-
-    const response = await fetch("http://localhost:3000/api/login", {
+    const response = await fetch("http://localhost:3000/api/signup", {
       method: "POST",
       headers: {
-        Authorization: `Basic ${base64}`,
+        "Content-Type": "application/json",
+        Authorization: `Basic ${Buffer.from(`${password}:${email}`).toString(
+          "base64"
+        )}`,
       },
+      body: JSON.stringify({ inviteKey: inviteCode }),
     });
-
-    const data = await response.json();
-
-    console.log(data);
   };
 
   return (
@@ -50,8 +37,14 @@ export default function Home() {
             setPassword(e.target.value);
           }}
         />
-
-        <button onClick={handleSave}>Save</button>
+        <input
+          className="border p-2 rounded-lg border-black"
+          type="text"
+          placeholder="Invite Code"
+          onChange={(e) => {
+            setInviteCode(e.target.value);
+          }}
+        />
         <button onClick={handleSend}>Send</button>
       </div>
     </div>

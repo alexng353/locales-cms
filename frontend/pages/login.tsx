@@ -1,34 +1,24 @@
 import { useState } from "react";
 
-export default function Home() {
+export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSave = async () => {
-    // base64(email:password)
-
-    const base64 = Buffer.from(`${password}:${email}`).toString("base64");
-
-    localStorage.setItem("auth", base64);
-
-    console.log(base64);
-  };
-
   const handleSend = async () => {
-    const base64 = localStorage.getItem("auth");
-
-    if (!base64) return;
-
+    const basic = Buffer.from(`${password}:${email}`).toString("base64");
     const response = await fetch("http://localhost:3000/api/login", {
       method: "POST",
       headers: {
-        Authorization: `Basic ${base64}`,
+        "Content-Type": "application/json",
+        Authorization: `Basic ${basic}`,
       },
     });
-
     const data = await response.json();
-
     console.log(data);
+
+    if (data.message === "success") {
+      localStorage.setItem("token", basic);
+    }
   };
 
   return (
@@ -51,7 +41,6 @@ export default function Home() {
           }}
         />
 
-        <button onClick={handleSave}>Save</button>
         <button onClick={handleSend}>Send</button>
       </div>
     </div>

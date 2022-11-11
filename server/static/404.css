@@ -1,0 +1,26 @@
+/* fonts */
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: #fff;
+}
+
+.title {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0 0 0.3em 0;
+}
+
+.main_card {
+  /* flex justify-center items-center w-full min-h-screen */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  /* flex col */
+  flex-direction: column;
+}
