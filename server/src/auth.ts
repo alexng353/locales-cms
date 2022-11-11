@@ -8,8 +8,14 @@ const prisma = new PrismaClient();
 
 import crypto from "crypto";
 import bodyParser from "body-parser";
+import cors from "cors";
 
 router.use(bodyParser.json());
+router.use(
+  cors({
+    origin: "*",
+  })
+);
 
 router.post("/api/signup", async (req, res) => {
   const inviteKey = req.body.inviteKey;
