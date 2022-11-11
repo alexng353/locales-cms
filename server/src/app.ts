@@ -64,6 +64,12 @@ app.post("/api/post", async (req, res) => {
   }
 
   const { namespace, language, content } = req.body;
+  try {
+    JSON.parse(content);
+  } catch (e) {
+    res.status(400).send("Invalid JSON");
+    return;
+  }
 
   // write content
 
