@@ -21,6 +21,7 @@ app.use(
     origin: "*",
   })
 );
+
 app.use(bodyParser.json());
 
 app.use("/locales", express.static("locales"));
@@ -170,6 +171,41 @@ app.post("/api/newinvite", async (req, res) => {
   });
 
   return res.status(200).json({ invite: invite.invite });
+});
+
+app.post("/api/post", async (req, res) => {
+  const basic = req.headers.authorization;
+
+  if (!basic) {
+    res.status(401).send("Unauthorized");
+
+    return;
+  }
+
+  const [password, email] = Buffer.from(basic.split(" ")[1], "base64")
+    .toString("utf-8")
+    .split(":");
+
+  const user = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+
+  if (!user) {
+    res.status(401).send("Unauthorized");
+    return;
+  }
+
+  const hashedPassword = crypto
+    .createHash("sha512")
+    .update(password)
+    .digest("hex");
+
+  if (user.password !== hashedPassword) {
+    res.status(401).send("Unauthorized");
+    return;
+  }
 });
 
 app.get("*", async (req, res) => {
